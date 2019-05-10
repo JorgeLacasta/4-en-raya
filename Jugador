@@ -1,0 +1,42 @@
+
+public class Jugador{
+	
+	private String color,
+					 nombre;
+	
+	private int cantidadTurnos;
+	
+	Jugador (int num) {
+
+		this.nombre = "Jugador " + num;
+		
+		if(num == 1) {
+			this.color = "Rojo";
+		}else if(num == 2){
+			this.color = "Amarillo";
+		}
+	}
+	
+	Jugador (String nombre,String color) {
+		this.nombre = nombre;
+		this.color = color;	
+	}
+	
+	void setCantidadTurnos (int cantidadTurnos) {
+		this.cantidadTurnos = cantidadTurnos;
+	}
+	
+	int getCantidadTurnos () {
+		return cantidadTurnos;
+	}
+	void setNombre (String nombre) {
+		this.nombre = nombre;
+	}
+	String getNombre () {
+		return nombre;
+	}
+	String getColor () {
+		return color;
+	}
+	
+}
