@@ -1,0 +1,204 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Fichero{
+
+	private int cantidadTurnos = 22,
+				posicion = 0;
+	private final static int defaultLength = 10;
+	
+	private int [] turnosTOP10 = new int [10] ;
+	
+	private String [] nombreTOP10 = new String [10],
+						colorTOP10 = new String [10];
+	
+	private final static String cabecera =  "	<h1 class=\"color\">PUNTUACIONES</h1>\n\n\n" + 
+											"	<div id=\"contenido\">" + 
+											"		<pre>" + 
+											"<span class=\"color\">NUM		NOMBRE			COLOR			TURNOS</span>\n\n",
+								style = "<title></title>" + 
+										"<style>" + 
+										"	h1{text-align:center;"
+										+ "		margin-left: 30px;}" + 
+										"	.color {color:yellow;}" + 
+										"	#contenido {margin-left : 30px;" + 
+										"				}" + 
+										"</style>";
+	
+	private String  nombre ="SergioMola",
+					color = "Rojo    ",
+					POS1,
+					POS2,
+					POS3,
+					POS4,
+					POS5,
+					POS6,
+					POS7,
+					POS8,
+					POS9,
+					POS10,
+					body,
+					contenido = "",
+					html
+					;
+	
+	private File ficheroRecords = new File("puntuaciones.txt");
+	private BufferedWriter bw;
+	private BufferedReader br;
+	
+	Fichero () {
+		resetTOP10();
+		//lee();
+	}
+	
+	private boolean compruebaLengthNombre() {
+		boolean haveDefaultLength = false;
+		if(nombre.length() == 10) {
+			haveDefaultLength = true;
+		}
+		return haveDefaultLength;
+	}
+	
+	private void setNewNombre() {
+		for (int i = nombre.length(); i < defaultLength; i++) {
+			nombre += " ";
+		}
+	}
+	
+	private void setHTML() {
+		
+		body="<body>" + 
+				cabecera+ 
+				lee()+
+				"		</pre>"+
+				"	</div>" + 
+				"</body>";
+		html = "<html>"+style+body+"</html>";
+	}
+	String getHTML() {
+		setHTML();
+		return html;
+	}
+	private void setPosiciones () {
+		POS1 = "1.		"+nombreTOP10 [0]+"		"+colorTOP10 [0]+"		"+turnosTOP10 [0]+"\n\n";
+		POS2 = "2.		"+nombreTOP10 [1]+"		"+colorTOP10 [1]+"		"+turnosTOP10 [1]+"\n\n";
+		POS3 = "3.		"+nombreTOP10 [2]+"		"+colorTOP10 [2]+"		"+turnosTOP10 [2]+"\n\n";
+		POS4 = "4.		"+nombreTOP10 [3]+"		"+colorTOP10 [3]+"		"+turnosTOP10 [3]+"\n\n";
+		POS5 = "5.		"+nombreTOP10 [4]+"		"+colorTOP10 [4]+"		"+turnosTOP10 [4]+"\n\n";
+		POS6 = "6.		"+nombreTOP10 [5]+"		"+colorTOP10 [5]+"		"+turnosTOP10 [5]+"\n\n";
+		POS7 = "7.		"+nombreTOP10 [6]+"		"+colorTOP10 [6]+"		"+turnosTOP10 [6]+"\n\n";
+		POS8 = "8.		"+nombreTOP10 [7]+"		"+colorTOP10 [7]+"		"+turnosTOP10 [7]+"\n\n";
+		POS9 = "9.		"+nombreTOP10 [8]+"		"+colorTOP10 [8]+"		"+turnosTOP10 [8]+"\n\n";
+		POS10 = "10.		"+nombreTOP10 [9]+"		"+colorTOP10 [9]+"		"+turnosTOP10 [9]+"\n\n";
+	}
+	
+	private String getPosiciones() {
+		setPosiciones();
+		return POS1 + POS2 + POS3 + POS4 + POS5 + POS6 + POS7 + POS8 + POS9 + POS10;
+	}
+	
+	void cambiaFichero() {
+		if (compruebaTOP10()) {
+			if(!compruebaLengthNombre()) {
+				setNewNombre();
+			}
+			setNewTOP10();
+			escribe();
+		}
+		
+	}
+	void resetTOP10() {
+		for (int i = 0; i < turnosTOP10.length; i++) {
+			turnosTOP10 [i] = cantidadTurnos;
+			nombreTOP10 [i] = nombre;
+			colorTOP10 [i] = color;
+		}
+		escribe();
+	}
+	
+	private boolean compruebaTOP10() {
+		boolean hayNuevoTOP = false;
+		while (posicion < turnosTOP10.length) {
+			
+			if(cantidadTurnos <= turnosTOP10 [posicion]) {
+				hayNuevoTOP = true;
+				break;
+			}
+			posicion++;
+		}
+		return hayNuevoTOP;
+	}
+	
+	private void setNewTOP10() {
+		
+		for (int i = turnosTOP10.length-1; i > posicion ; i--) {
+			turnosTOP10 [i] = turnosTOP10 [i-1];
+			nombreTOP10 [i] = nombreTOP10 [i-1];
+			colorTOP10 [i] = colorTOP10 [i-1];
+		}
+		turnosTOP10 [posicion] = cantidadTurnos;
+		nombreTOP10 [posicion] = nombre;
+		colorTOP10 [posicion] = color;
+		posicion = 0;
+		
+	}
+	void setInfo(String nombre, String color, int cantidadTurnos) {
+		this.nombre = nombre;
+		if(color == "Rojo") {
+			this.color = color + "    ";
+		}else {
+			this.color = color;
+		}
+		
+		this.cantidadTurnos = cantidadTurnos;
+	}
+	
+	private void escribe () {
+		
+		try{ 
+			bw = new BufferedWriter(new FileWriter(ficheroRecords));
+			bw.write(getPosiciones());
+			bw.newLine();
+			bw.close();
+		} catch (FileNotFoundException e) {
+			e.getStackTrace();
+			System.out.println("murio escribe file - " + e.getMessage());
+		} catch (IOException e) {
+			e.getStackTrace();
+			System.out.println("murio escribe IO - " + e.getMessage());
+		} catch (Exception e) {
+			e.getStackTrace();
+			System.out.println("murio escribe no se");
+		}
+		
+	}
+	
+	private String lee() {
+		try {
+			br = new BufferedReader(new FileReader(ficheroRecords));
+			contenido ="";
+			String linea;
+			
+			while((linea = br.readLine()) != null) {	
+				contenido += linea + "\n";
+			}
+			br.close();
+		}catch (FileNotFoundException e){
+			e.getStackTrace();
+			System.out.println("murio lee file - " + e.getMessage());
+		}catch(IOException e) {
+			e.getStackTrace();
+			System.out.println("murio lee IO - " + e.getMessage());
+		} catch (Exception e) {
+			e.getStackTrace();
+			System.out.println("murio lee no se");
+		}
+		return contenido;
+	}
+
+}
