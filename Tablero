@@ -1,0 +1,271 @@
+
+public class Tablero {
+
+	boolean tablero [][] = new boolean [6][7];
+	boolean fichasRojas [][] = new boolean [6][7];
+	boolean fichasAmarillas [][] = new boolean [6][7];
+	int contador = 0;
+	int fila = 5;
+	//int columna;
+
+	//false = vacio
+	//true = llenO
+	
+	public Tablero () {
+		for (int i = 0; i < tablero.length; i++) {
+			for (int j = 0; j < tablero[i].length; j++) {
+				tablero[i][j] = false;
+				fichasRojas[i][j] = false;
+				fichasAmarillas[i][j] = false;
+			}
+		}
+	}
+	public int getFila () {
+		return fila;
+	}
+	
+	/*
+	public void resetTablero () {
+		for (int i = 0; i < tablero.length; i++) {
+			for (int j = 0; j < tablero[i].length; j++) {
+				tablero[i][j] = false;
+				fichasRojas[i][j] = false;
+				fichasAmarillas[i][j] = false;
+			}
+		}
+	}*/
+	
+	public void resetFila() {
+		fila = 5;
+	}
+	
+	public boolean anotar (int columna) {
+		
+		boolean poderAnotar = false;
+		//this.columna = columna;
+		
+		if (!columnaLlena(columna)) {					// si l fila NO esta llena
+			tablero [buscaHueco(columna)] [columna] = true;		// si hay hueco en la fila busca la posiciĂ³n que le corresponde
+			if(JuegoRayas.turno == true) {
+				fichasRojas [fila][columna] = true;
+			}else {
+				fichasAmarillas [fila][columna] = true;
+			}
+			poderAnotar = true;
+			contador++;
+		}
+		
+		return poderAnotar;
+	}
+
+	
+	private boolean columnaLlena (int columna) {
+		
+		boolean estaLleno = false;
+		
+		if (tablero[0][columna] == true) {
+			estaLleno = true;
+		}
+		
+		return estaLleno;
+	}
+
+	private int buscaHueco (int columna) {
+		
+		//boolean huecoEncontrado = false;
+		
+		int i = fila;
+		
+		while (i >=0) {
+			if (tablero [i] [columna] == false) {
+				//huecoEncontrado = true;
+				break;
+			}else if(i==0){
+				break;
+			}
+			i--;
+		}
+		fila = i;
+		
+		return fila;
+	}
+	
+	
+	public boolean ganador (){
+		
+		boolean ganador = false;
+		boolean [][] tablero;
+
+		if (JuegoRayas.turno) {		//turno jugador 1- ROJO
+			tablero = fichasRojas;
+		}else {
+			tablero = fichasAmarillas;
+		}
+			
+		if (ganadorHorizontal(tablero) || ganadorVertical(tablero) ||
+			ganadorDiagonal1(tablero) || ganadorDiagonal2(tablero)
+			) {
+			ganador =true;
+		}
+		
+		return ganador;
+	}
+	
+	public boolean ganadorHorizontal (boolean [][] tablero) {
+		
+		boolean ganador = false;
+		int contador = 0;
+		
+		for (int i = tablero.length-1; i >= 0 ; i--) {
+			contador = 0;
+			for (int j = 0; j < tablero[i].length; j++) {
+				if (tablero[i][j] == true ) {
+					contador++;
+					if (contador == 4) {
+						break;
+					}
+				}else {
+					contador =0;
+				}
+			}
+			if (contador == 4) {
+				ganador = true;
+				break;
+			}
+		}		
+		
+		return ganador;		
+	}
+	public boolean ganadorVertical (boolean [][] tablero) {
+			
+		boolean ganador = false;
+		int contador = 0;
+		
+		for (int i = 0; i <tablero[0].length ; i++) {
+			contador = 0;
+			for (int j = 0; j < tablero.length; j++) {
+				if (tablero[j][i] == true ) {
+					contador++;
+					if (contador == 4) {
+						break;
+					}
+				}else {
+					contador =0;
+				}
+			}
+			if (contador == 4) {
+				ganador = true;
+				break;
+			}
+		}		
+		
+		return ganador;		
+	}
+	public boolean ganadorDiagonal1(boolean [][] tablero) {
+		
+		boolean ganador = false;
+		int contador = 0,
+			posicionFila = 3,
+			rango = 3,
+			numFila;
+		
+		for (int i = 0; i < 6 ; i++) {
+			if (i >= 3) {
+				numFila = posicionFila;
+				for(int k = 0; k <= rango; k++) {
+					if (tablero [numFila][k] == true ) {
+						contador++;
+						if (contador == 4) {
+							break;
+						}
+					}else {
+						contador = 0;
+					}
+					numFila--;
+				}
+				if (contador == 4) {
+					ganador = true;
+					break;
+				}
+				posicionFila++;
+				rango++;	
+			}else {
+				numFila = i;
+				for(int k = 6; k > i ; k--) {
+					if (tablero[numFila][k] == true ) {
+						contador++;
+						if (contador == 4) {
+							break;
+						}
+					}else {
+						contador =0;
+					}
+					numFila++;
+				}
+				if (contador == 4) {
+					ganador = true;
+					break;
+				}	
+			}			
+			contador = 0;
+		}
+			
+		
+		return ganador;			
+	}
+	public boolean ganadorDiagonal2 (boolean [][] tablero) {
+		
+		boolean ganador = false;
+		int contador = 0,
+			posicionFila = 2,
+			rango = 3,
+			numFila = 0;
+		
+		for (int i = 0; i < 6 ; i++) {
+			if (i < 3) {
+				numFila = posicionFila;
+				for(int k = 0; k <= rango ; k++) {
+					if (tablero [numFila][k] == true ) {
+						contador++;
+						if (contador == 4) {
+							break;
+						}
+					}else {
+						contador = 0;
+					}
+					numFila++;
+				}
+				if (contador == 4) {
+					ganador = true;
+					break;
+				}
+				rango++;
+				posicionFila--;
+			}else {
+				if(i == 3) {
+					rango = 2;	
+				}
+				numFila = i;
+				for(int k = 6; k > rango; k--) {
+					if (tablero [numFila][k] == true ) {
+						contador++;
+						if (contador == 4) {
+							break;
+						}
+					}else {
+						contador =0;
+					}
+					numFila--;
+				}
+				if (contador == 4) {
+					ganador = true;
+					break;
+				}
+				rango--;
+			}
+			contador = 0;
+		}
+		
+		return ganador;			
+	}
+}
