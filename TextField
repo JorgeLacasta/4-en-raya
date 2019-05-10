@@ -1,0 +1,115 @@
+import java.awt.Color;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+
+public class TextField extends PlainDocument{
+
+	private JTextField textBoxP1 = new JTextField(),
+						textBoxP2 = new JTextField();
+	
+	private JPanel panelTextField = new JPanel();
+	
+	private JLabel labelP1 = new JLabel("Escribe el nombre del Jugador1", SwingConstants.CENTER),
+					labelP2 = new JLabel("Escribe el nombre del Jugador2", SwingConstants.CENTER);
+
+	private final static Border line = new LineBorder(Color.BLUE);
+	private final static Border margin = new EmptyBorder(5, 15, 5, 15);
+	private final static Border compound = new CompoundBorder(line, margin);
+	
+	ImageIcon icon = new ImageIcon("fondo.jpg");
+	//ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("fondo.jpg"));
+	
+	private int limit;
+	
+	private String  nameP1,
+					nameP2;
+	
+	TextField() {
+	
+		labelP1.setBounds(180, 100, 240, 40);
+		labelP1.setForeground(Color.BLUE);
+		labelP1.setBackground(Color.BLACK);
+		
+		labelP2.setBounds(180, 200, 240, 40);
+		labelP2.setForeground(Color.BLUE);
+		labelP2.setBackground(Color.BLACK);
+		
+		textBoxP1.setBounds(200, 130, 200, 50);
+		textBoxP1.setBorder(compound);
+		textBoxP1.setForeground(Color.WHITE);
+		textBoxP1.setBackground(Color.BLACK);
+		textBoxP1.setDocument(new TextField (10));
+				
+		textBoxP2.setBounds(200, 230, 200, 50);
+		textBoxP2.setBorder(compound);
+		textBoxP2.setForeground(Color.WHITE);
+		textBoxP2.setBackground(Color.BLACK);
+		textBoxP2.setDocument(new TextField (10));
+		
+		setPanel();
+	}
+	TextField(int limit) {
+	    super();
+	    this.limit = limit;
+	}
+
+	TextField(int limit, boolean upper) {
+	    super();
+	    this.limit = limit;
+	}
+
+	public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+	    if (str == null)
+	      return;
+
+	    if ((getLength() + str.length()) <= limit) {
+	      super.insertString(offset, str, attr);
+	    }
+	}
+
+	void setNames () {
+		nameP1 = textBoxP1.getText();
+		nameP2 = textBoxP2.getText();
+	}
+	
+	void setTextBox () {
+		textBoxP1.setText("");
+		textBoxP2.setText("");
+	}
+	
+	String getNameP1 () {
+		return nameP1;
+	}
+	
+	String getNameP2 () {
+		return nameP2;
+	}
+	
+	
+	private void setPanel () {
+		panelTextField.setLayout(null);
+		panelTextField.setBackground(Color.BLACK);
+		panelTextField.add(labelP1);
+		panelTextField.add(labelP2);
+		panelTextField.add(textBoxP1);
+		panelTextField.add(textBoxP2);
+		//panelTextField.add(boton);
+		
+	}
+	
+	JPanel getPanel(){
+		return panelTextField;
+	}
+
+}
